@@ -99,3 +99,28 @@ def test_outcome_filters_endpoint():
     assert data["academic_years"] == sorted(
         {r["academic_year"] for r in records})
     assert data["statuses"] == ["pending", "approved", "rejected"]
+
+
+def test_malformed_records_are_handled():
+    records = [
+        {"id": "bad-1"},
+        {
+            "id": "bad-2",
+            "student_email": "student@mergington.edu",
+            "category": None,
+            "academic_year": "2025-2026",
+            "status": "approved",
+            "date": "not-a-date",
+        },
+    ]
+
+    # Records without a usable date cannot match a date range
+    assert outcomes_store.filter_outcomes(
+        records, start_date=outcomes_store.parse_date("2020-01-01")) == []
+
+    analytics = outcomes_store.build_analytics(records)
+    assert analytics["totals"]["total_records"] == 2
+    assert analytics["totals"]["distinct_students"] == 1
+    assert [group["category"]
+            for group in analytics["by_category"]] == ["Unknown"]
+    assert outcomes_store.available_filters(records)["categories"] == ["Unknown"]

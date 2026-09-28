@@ -24,13 +24,6 @@ def load_outcomes():
         return json.load(file)
 
 
-def save_outcomes(records):
-    """Persist the given outcome records."""
-    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(DATA_FILE, "w", encoding="utf-8") as file:
-        json.dump(records, file, indent=2)
-
-
 def parse_date(value: str) -> date:
     """Parse a YYYY-MM-DD string, raising ValueError when invalid."""
     return date.fromisoformat(value)

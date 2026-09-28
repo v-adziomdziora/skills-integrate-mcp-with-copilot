@@ -210,14 +210,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const table = document.createElement("table");
     table.className = "breakdown-table";
+
+    const thead = document.createElement("thead");
     const headerRow = document.createElement("tr");
     [title, "Total", "Approved", "Pending", "Rejected"].forEach((text) => {
       const th = document.createElement("th");
+      th.scope = "col";
       th.textContent = text;
       headerRow.appendChild(th);
     });
-    table.appendChild(headerRow);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
 
+    const tbody = document.createElement("tbody");
     groups.forEach((group) => {
       const row = document.createElement("tr");
       [
@@ -231,9 +236,10 @@ document.addEventListener("DOMContentLoaded", () => {
         cell.textContent = value;
         row.appendChild(cell);
       });
-      table.appendChild(row);
+      tbody.appendChild(row);
     });
 
+    table.appendChild(tbody);
     wrapper.appendChild(table);
     return wrapper;
   }

@@ -47,17 +47,23 @@ def filter_outcomes(
     """Return the records matching the given filter context."""
     filtered = []
     for record in records:
-        record_date = parse_date(record["date"])
+        try:
+            record_date = parse_date(record["date"])
+        except (KeyError, TypeError, ValueError):
+            # A record without a usable date cannot match a date range
+            record_date = None
 
+        if (start_date or end_date) and record_date is None:
+            continue
         if start_date and record_date < start_date:
             continue
         if end_date and record_date > end_date:
             continue
-        if academic_year and record["academic_year"] != academic_year:
+        if academic_year and record.get("academic_year") != academic_year:
             continue
-        if category and record["category"] != category:
+        if category and record.get("category") != category:
             continue
-        if status and record["status"] != status:
+        if status and record.get("status") != status:
             continue
 
         filtered.append(record)
@@ -69,13 +75,14 @@ def _breakdown(records, key: str):
     """Group records by a field and count totals per review status."""
     groups = {}
     for record in records:
+        value = record.get(key, "Unknown")
         group = groups.setdefault(
-            record[key],
-            {key: record[key], "total": 0, "pending": 0,
+            value,
+            {key: value, "total": 0, "pending": 0,
              "approved": 0, "rejected": 0}
         )
         group["total"] += 1
-        if record["status"] in REVIEW_STATUSES:
+        if record.get("status") in REVIEW_STATUSES:
             group[record["status"]] += 1
 
     return sorted(groups.values(), key=lambda group: group[key])
@@ -89,11 +96,12 @@ def build_analytics(records):
     return {
         "totals": {
             "total_records": len(records),
-            "distinct_students": len({record["student_email"] for record in records}),
+            "distinct_students": len(
+                {record.get("student_email") for record in records}),
             "pending_reviews": len(
-                [r for r in records if r["status"] == "pending"]),
+                [r for r in records if r.get("status") == "pending"]),
             "approved_records": len(
-                [r for r in records if r["status"] == "approved"]),
+                [r for r in records if r.get("status") == "approved"]),
         },
         "by_category": _breakdown(records, "category"),
         "by_academic_year": _breakdown(records, "academic_year"),
@@ -104,7 +112,9 @@ def build_analytics(records):
 def available_filters(records):
     """List the category and academic year values present in the records."""
     return {
-        "categories": sorted({record["category"] for record in records}),
-        "academic_years": sorted({record["academic_year"] for record in records}),
+        "categories": sorted(
+            {record.get("category", "Unknown") for record in records}),
+        "academic_years": sorted(
+            {record.get("academic_year", "Unknown") for record in records}),
         "statuses": list(REVIEW_STATUSES),
     }

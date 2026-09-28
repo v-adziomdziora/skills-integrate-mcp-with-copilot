@@ -157,7 +157,8 @@ def get_outcome_analytics(
     """Aggregate metrics about extracurricular outcomes for staff.
 
     Only aggregated counts are returned, so no individual student data is
-    exposed by this endpoint.
+    exposed by this endpoint. The application has no authentication yet, so the
+    metrics are intentionally limited to non-identifying aggregates.
     """
     # Validate the review status filter
     if status is not None and status not in outcomes_store.REVIEW_STATUSES:
@@ -167,15 +168,22 @@ def get_outcome_analytics(
         )
 
     # Validate the date range filter
-    try:
-        parsed_start = outcomes_store.parse_date(
-            start_date) if start_date else None
-        parsed_end = outcomes_store.parse_date(end_date) if end_date else None
-    except ValueError:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid date. Expected the format YYYY-MM-DD"
-        )
+    parsed_start = None
+    parsed_end = None
+    for field, value in (("start_date", start_date), ("end_date", end_date)):
+        if not value:
+            continue
+        try:
+            parsed = outcomes_store.parse_date(value)
+        except ValueError as error:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid {field}. Expected the format YYYY-MM-DD"
+            ) from error
+        if field == "start_date":
+            parsed_start = parsed
+        else:
+            parsed_end = parsed
 
     if parsed_start and parsed_end and parsed_start > parsed_end:
         raise HTTPException(

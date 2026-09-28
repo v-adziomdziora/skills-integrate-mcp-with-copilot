@@ -198,3 +198,65 @@ footer {
   padding: 20px;
   color: #666;
 }
+
+/* Staff analytics dashboard */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1a237e;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+.breakdown {
+  margin-bottom: 20px;
+}
+
+.breakdown h4 {
+  margin-bottom: 8px;
+  color: #0066cc;
+}
+
+.breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.breakdown-table th,
+.breakdown-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.breakdown-table th {
+  background-color: #f0f0f0;
+}
+
+.empty-state {
+  padding: 10px;
+  color: #666;
+  font-style: italic;
+}

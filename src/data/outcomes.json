@@ -1,0 +1,65 @@
+[
+  {
+    "id": "out-001",
+    "student_email": "michael@mergington.edu",
+    "activity": "Chess Club",
+    "category": "Competition",
+    "date": "2025-10-14",
+    "academic_year": "2025-2026",
+    "status": "approved"
+  },
+  {
+    "id": "out-002",
+    "student_email": "daniel@mergington.edu",
+    "activity": "Chess Club",
+    "category": "Competition",
+    "date": "2025-11-02",
+    "academic_year": "2025-2026",
+    "status": "pending"
+  },
+  {
+    "id": "out-003",
+    "student_email": "emma@mergington.edu",
+    "activity": "Programming Class",
+    "category": "Project",
+    "date": "2025-12-09",
+    "academic_year": "2025-2026",
+    "status": "approved"
+  },
+  {
+    "id": "out-004",
+    "student_email": "sophia@mergington.edu",
+    "activity": "Programming Class",
+    "category": "Project",
+    "date": "2026-01-20",
+    "academic_year": "2025-2026",
+    "status": "rejected"
+  },
+  {
+    "id": "out-005",
+    "student_email": "emma@mergington.edu",
+    "activity": "Math Club",
+    "category": "Competition",
+    "date": "2026-02-11",
+    "academic_year": "2025-2026",
+    "status": "pending"
+  },
+  {
+    "id": "out-006",
+    "student_email": "ava@mergington.edu",
+    "activity": "Art Club",
+    "category": "Exhibition",
+    "date": "2025-03-05",
+    "academic_year": "2024-2025",
+    "status": "approved"
+  },
+  {
+    "id": "out-007",
+    "student_email": "liam@mergington.edu",
+    "activity": "Soccer Team",
+    "category": "Community Service",
+    "date": "2025-04-18",
+    "academic_year": "2024-2025",
+    "status": "approved"
+  }
+]

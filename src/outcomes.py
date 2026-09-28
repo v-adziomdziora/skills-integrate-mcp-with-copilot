@@ -32,7 +32,7 @@ def parse_date(value: str) -> date:
 def _group_value(record, key: str) -> str:
     """Return a record field as a group label, falling back to "Unknown"."""
     value = record.get(key)
-    return value if isinstance(value, str) and value else "Unknown"
+    return value if isinstance(value, str) and value.strip() else "Unknown"
 
 
 def filter_outcomes(

@@ -302,7 +302,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) {
         analyticsMetrics.textContent =
-          result.detail || "Failed to load analytics.";
+          typeof result.detail === "string"
+            ? result.detail
+            : "Failed to load analytics.";
         analyticsBreakdown.innerHTML = "";
         return;
       }

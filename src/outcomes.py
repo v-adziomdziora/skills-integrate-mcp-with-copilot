@@ -71,11 +71,17 @@ def filter_outcomes(
     return filtered
 
 
+def _group_value(record, key: str) -> str:
+    """Return a record field as a group label, falling back to "Unknown"."""
+    value = record.get(key)
+    return value if isinstance(value, str) and value else "Unknown"
+
+
 def _breakdown(records, key: str):
     """Group records by a field and count totals per review status."""
     groups = {}
     for record in records:
-        value = record.get(key, "Unknown")
+        value = _group_value(record, key)
         group = groups.setdefault(
             value,
             {key: value, "total": 0, "pending": 0,
@@ -97,7 +103,8 @@ def build_analytics(records):
         "totals": {
             "total_records": len(records),
             "distinct_students": len(
-                {record.get("student_email") for record in records}),
+                {record["student_email"] for record in records
+                 if record.get("student_email")}),
             "pending_reviews": len(
                 [r for r in records if r.get("status") == "pending"]),
             "approved_records": len(
@@ -113,8 +120,8 @@ def available_filters(records):
     """List the category and academic year values present in the records."""
     return {
         "categories": sorted(
-            {record.get("category", "Unknown") for record in records}),
+            {_group_value(record, "category") for record in records}),
         "academic_years": sorted(
-            {record.get("academic_year", "Unknown") for record in records}),
+            {_group_value(record, "academic_year") for record in records}),
         "statuses": list(REVIEW_STATUSES),
     }

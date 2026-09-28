@@ -123,4 +123,9 @@ def test_malformed_records_are_handled():
     assert analytics["totals"]["distinct_students"] == 1
     assert [group["category"]
             for group in analytics["by_category"]] == ["Unknown"]
-    assert outcomes_store.available_filters(records)["categories"] == ["Unknown"]
+    assert outcomes_store.available_filters(
+        records)["categories"] == ["Unknown"]
+
+    # The "Unknown" placeholder offered as a filter matches those records
+    assert len(outcomes_store.filter_outcomes(
+        records, category="Unknown")) == 2

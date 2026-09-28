@@ -29,6 +29,12 @@ def parse_date(value: str) -> date:
     return date.fromisoformat(value)
 
 
+def _group_value(record, key: str) -> str:
+    """Return a record field as a group label, falling back to "Unknown"."""
+    value = record.get(key)
+    return value if isinstance(value, str) and value else "Unknown"
+
+
 def filter_outcomes(
     records,
     start_date: Optional[date] = None,
@@ -52,9 +58,9 @@ def filter_outcomes(
             continue
         if end_date and record_date > end_date:
             continue
-        if academic_year and record.get("academic_year") != academic_year:
+        if academic_year and _group_value(record, "academic_year") != academic_year:
             continue
-        if category and record.get("category") != category:
+        if category and _group_value(record, "category") != category:
             continue
         if status and record.get("status") != status:
             continue
@@ -62,12 +68,6 @@ def filter_outcomes(
         filtered.append(record)
 
     return filtered
-
-
-def _group_value(record, key: str) -> str:
-    """Return a record field as a group label, falling back to "Unknown"."""
-    value = record.get(key)
-    return value if isinstance(value, str) and value else "Unknown"
 
 
 def _breakdown(records, key: str):

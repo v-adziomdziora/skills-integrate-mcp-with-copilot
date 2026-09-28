@@ -138,6 +138,20 @@ def unregister_from_activity(activity_name: str, email: str):
     return {"message": f"Unregistered {email} from {activity_name}"}
 
 
+def _parse_filter_date(field: str, value: Optional[str]):
+    """Parse a date filter, raising a 400 error when it is not a valid date"""
+    if not value:
+        return None
+
+    try:
+        return outcomes_store.parse_date(value)
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid {field}. Expected the format YYYY-MM-DD"
+        ) from error
+
+
 @app.get("/outcomes/filters")
 def get_outcome_filters():
     """List the filter values available for the staff analytics dashboard"""
@@ -168,22 +182,8 @@ def get_outcome_analytics(
         )
 
     # Validate the date range filter
-    parsed_start = None
-    parsed_end = None
-    for field, value in (("start_date", start_date), ("end_date", end_date)):
-        if not value:
-            continue
-        try:
-            parsed = outcomes_store.parse_date(value)
-        except ValueError as error:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid {field}. Expected the format YYYY-MM-DD"
-            ) from error
-        if field == "start_date":
-            parsed_start = parsed
-        else:
-            parsed_end = parsed
+    parsed_start = _parse_filter_date("start_date", start_date)
+    parsed_end = _parse_filter_date("end_date", end_date)
 
     if parsed_start and parsed_end and parsed_start > parsed_end:
         raise HTTPException(
